@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,15 +13,28 @@ import java.util.Date;
 @Data @NoArgsConstructor @AllArgsConstructor
 public class DeclarationImportation {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "Number(14)")
+    //@Column(columnDefinition = "Number(14)")
     private Long id_declaration ;
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    @CreationTimestamp
+    @Column(name = "CREE_LE")
+    private Date creeLe;
+
+    @Column(name = "CREE_PAR", length = 30)
+    private String creePar;
+
+    @UpdateTimestamp
+    @Column(name = "MODIFIE_LE")
+    private Date modifieLe;
+
+    @Column(name = "MODIFIE_PAR", length = 30)
+    private String modifiePar;
+    //@JoinColumn(columnDefinition = "NUMBER(14)")
     @ManyToOne(fetch = FetchType.EAGER)
     private Operateur operateur_imporatateur;
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    //@JoinColumn(columnDefinition = "NUMBER(14)")
     @ManyToOne(fetch = FetchType.EAGER)
     private ServiceExterieur serviceExterieur;
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    //@JoinColumn(columnDefinition = "NUMBER(14)")
     @ManyToOne(fetch = FetchType.EAGER)
     private RegimeImportation regimeImportation;
     @Column(length = 50)
@@ -39,21 +54,21 @@ public class DeclarationImportation {
     @Column(length = 80)
     private Long num_recepisse ;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    @JoinColumn(name = "utilisateur_id",nullable = false)
     private Utilisateur user ;
     @Column(precision = 14 , scale = 3)
     private BigDecimal mnt_caution ;
     @Column(length = 50)
     private String ref_caution ;
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    @JoinColumn(name = "port1_id",nullable = false)
     @OneToOne(fetch = FetchType.EAGER)
     private PortDechargemnt portDecharPrincipal  ;
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    @JoinColumn(name = "port2_id")
     @OneToOne(fetch = FetchType.EAGER)
     private PortDechargemnt portDecharSecondaire ;
     @Column(length = 14)
     private int nbjourArriveNavire ;
-    @JoinColumn(columnDefinition = "NUMBER(14)")
+    @JoinColumn(name = "article_id",nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private ArticleImport articleImport ;
     @Temporal(TemporalType.DATE)

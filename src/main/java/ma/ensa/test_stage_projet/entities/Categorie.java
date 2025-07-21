@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,6 +17,19 @@ public class Categorie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String designation;
-    @OneToMany(mappedBy = "categorie", fetch = FetchType.EAGER)
-    private List<ArticleImport> articleImports;
+    @CreationTimestamp
+    @Column(name = "CREE_LE")
+    private Date creeLe;
+
+    @Column(name = "CREE_PAR", length = 30)
+    private String creePar;
+
+    @UpdateTimestamp
+    @Column(name = "MODIFIE_LE")
+    private Date modifieLe;
+
+    @Column(name = "MODIFIE_PAR", length = 30)
+    private String modifiePar;
+//    @OneToMany(mappedBy = "categorie", fetch = FetchType.EAGER)
+//    private List<ArticleImport> articleImports;
 }

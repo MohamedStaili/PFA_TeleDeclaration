@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,6 +18,19 @@ public class Profile {
     private Long id ;
     private String nom ;
     private String description ;
-    @OneToMany(mappedBy = "profile" , fetch = FetchType.LAZY)
-    private List<Utilisateur> utilisateurs ;
+    @CreationTimestamp
+    @Column(name = "CREE_LE")
+    private Date creeLe;
+
+    @Column(name = "CREE_PAR", length = 30)
+    private String creePar;
+
+    @UpdateTimestamp
+    @Column(name = "MODIFIE_LE")
+    private Date modifieLe;
+
+    @Column(name = "MODIFIE_PAR", length = 30)
+    private String modifiePar;
+//    @OneToMany(mappedBy = "profile" , fetch = FetchType.LAZY)
+//    private List<Utilisateur> utilisateurs ;
 }

@@ -1,9 +1,14 @@
 package ma.ensa.test_stage_projet;
 
+import ma.ensa.test_stage_projet.entities.*;
 import ma.ensa.test_stage_projet.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 public class TestStageProjetApplication {
@@ -17,72 +22,65 @@ public class TestStageProjetApplication {
                                                VilleRepositiry villeRepositiry,
                                                RegimeImportationRepository regimeImportationRepository,
                                                ArticleImportRepository articleImportRepository,
-                                               PortDechargementRepository portDechargementRepository
+                                               PortDechargementRepository portDechargementRepository,
+                                                CategorieRepository categorieRepository
 
-    ) {
+                                               ) {
         return args -> {
-//            Ville villeAdresse = new Ville();
-//            villeAdresse.setDesignation("Laayoune");
-//            villeAdresse.setCode("016");
-//            //creer les villes
-//            Ville villeRattachement2 = new Ville();
-//            villeRattachement2.setDesignation("Dakjla");
-//            villeRattachement2.setCode("017");
-//            Ville villeRattachement3 = new Ville();
-//            villeRattachement3.setDesignation("Semara");
-//            villeRattachement3.setCode("018");
-//            //creer les services
+            Integer code =0;
+//            Stream.of("Rabat","Sale","Temara","Kenitra","Sidi Kacem","Sidi slimane")
+//                    .forEach(name -> {
+//                        Ville ville = new Ville();
+//                        ville.setCode(Integer.toString(code));
+//                        ville.setDesignation(name);
+//                       villeRepositiry.save(ville);
+
+//                    });
+//            Ville ville =villeRepositiry.findById(1L).orElseThrow(()-> new RuntimeException("Ville n'existe pas"));
 //            ServiceExterieur serviceExterieur = new ServiceExterieur();
-//            serviceExterieur.setCode_se("016");
-//            serviceExterieur.setAdresse(villeAdresse);
-//            //ajouter les services au villes
-//            villeAdresse.setServiceExterieur(serviceExterieur);
-//            villeRattachement2.setServiceExterieur(serviceExterieur);
-//            villeRattachement3.setServiceExterieur(serviceExterieur);
-//
-//            //ajouetr les villes au services
-//            serviceExterieur.setVilles(List.of(villeAdresse,villeRattachement2, villeRattachement3));
-//            serviceExterieur.setNom_se(serviceExterieur.getAdresse().getDesignation());
-//            //sauvegarder seulement la service cascade va sauvegarder les villes
+//            serviceExterieur.setNom_se("Centrale");
+//            serviceExterieur.setAdresse(ville);
+//            serviceExterieur.setCode_se("1");
 //            serviceRepository.save(serviceExterieur);
-
-
+//              ServiceExterieur serviceExterieur = serviceRepository.findById(1L).orElse(null);
+//              List<Ville> villes = villeRepositiry.findAll();
+//              villes.forEach(ville -> {
+//                  ville.setServiceExterieur(serviceExterieur);
+//                  villeRepositiry.save(ville);
+//              });
+//            RegimeImportation regimeImportation = new RegimeImportation();
+//            regimeImportation.setDesignation("Importation libre");
+//            regimeImportation.setCode("001");
 //            RegimeImportation regimeImportation1 = new RegimeImportation();
-//            regimeImportation1.setCode("01");
-//            regimeImportation1.setDesignation("Importation libre");
-//
-//            RegimeImportation regimeImportation2 = new RegimeImportation();
-//            regimeImportation2.setCode("02");
-//            regimeImportation2.setDesignation("Admission temporaire");
-//            regimeImportationRepository.saveAll(List.of(regimeImportation1, regimeImportation2));
-//            RegimeImportation regimeImportation1 = regimeImportationRepository.findById(1L).orElse(null);
+//            regimeImportation1.setDesignation("Admission Temporaire");
+//            regimeImportation1.setCode("002");
+//            regimeImportationRepository.saveAll(List.of(regimeImportation, regimeImportation1));
+//            Categorie categorie = new Categorie();
+//            categorie.setDesignation("Cereales");
+//            Categorie categorie2 = new Categorie();
+//            categorie2.setDesignation("Legumineuse");
+//            categorieRepository.saveAll(List.of(categorie, categorie2));
+//            Categorie categorie = categorieRepository.findById(1L).orElse(null);
+//            Categorie categorie1 =categorieRepository.findById(2L).orElse(null);
+//            RegimeImportation regimeImportation = regimeImportationRepository.findById(1L).orElse(null);
 //            RegimeImportation regimeImportation2 = regimeImportationRepository.findById(2L).orElse(null);
 //
-//            Stream.of("Blé tendre","Blé dur","Maïs","Pois chiches secs" ,"Lentilles").forEach(produits -> {
-//
-//                ArticleImport articleImport = new ArticleImport();
-//                articleImport.setDesignation_dc(produits);
-//                articleImport.setRegime_import(regimeImportation1);
-//                articleImportRepository.save(articleImport);
-//            });
-//            Stream.of("Blé tendre","Blé dur","Maïs","Pois chiches secs" ,"Lentilles").forEach(produits -> {
-//
-//                ArticleImport articleImport = new ArticleImport();
-//                articleImport.setDesignation_dc(produits);
-//                articleImport.setRegime_import(regimeImportation2);
-//                articleImportRepository.save(articleImport);
-//            });
-//            List<Ville> villes =villeRepositiry.findAll();
-//            villes.forEach(ville -> {
-//                PortDechargemnt portDechargemnt = new PortDechargemnt();
-//                portDechargemnt.setVille(ville);
-//                portDechargemnt.setServiceExterieur(ville.getServiceExterieur());
-//                portDechargemnt.setCode(ville.getCode());
-//                portDechargemnt.setDesignation(ville.getDesignation());
-//                portDechargementRepository.save(portDechargemnt);
-//
-//            });
-
+//            ArticleImport articleImport = new ArticleImport();
+//            articleImport.setRegime_import(regimeImportation);
+//            articleImport.setDesignation_dc("Lupin");
+//            articleImport.setCategorie(categorie);
+//            ArticleImport articleImport2 = new ArticleImport();
+//            articleImport2.setRegime_import(regimeImportation2);
+//            articleImport2.setDesignation_dc("Lupin");
+//            articleImport2.setCategorie(categorie1);
+//            articleImportRepository.saveAll(List.of(articleImport, articleImport2));
+//            Ville ville = villeRepositiry.findById(4L).orElse(null);
+//            ServiceExterieur serviceExterieur = serviceRepository.findById(1L).orElse(null);
+//            PortDechargemnt portDechargemnt = new PortDechargemnt();
+//            portDechargemnt.setDesignation("Kenitra");
+//            portDechargemnt.setVille(ville);
+//            portDechargemnt.setServiceExterieur(serviceExterieur);
+//            portDechargementRepository.save(portDechargemnt);
 
 
 
