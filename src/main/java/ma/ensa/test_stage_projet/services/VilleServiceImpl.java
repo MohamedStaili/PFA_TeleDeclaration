@@ -11,16 +11,16 @@ import ma.ensa.test_stage_projet.mappers.ServiceExterieurMapper;
 import ma.ensa.test_stage_projet.mappers.VilleMapper;
 import ma.ensa.test_stage_projet.repositories.ServiceExterieurRepository;
 import ma.ensa.test_stage_projet.repositories.VilleRepositiry;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class VilleSeServiceImpl implements VilleSeService {
+public class VilleServiceImpl implements VilleService {
     private final VilleRepositiry villeRepositiry;
     private final ServiceExterieurRepository serviceExterieurRepository;
     private final VilleMapper villeMapper;
@@ -29,23 +29,40 @@ public class VilleSeServiceImpl implements VilleSeService {
     public VilleDTO saveVille(VilleDTO villeDTO, String nom_se) throws NotFoundSEException {
         ServiceExterieur serviceExterieur = serviceExterieurRepository.findByNomSE(nom_se);
         if (serviceExterieur == null) throw new NotFoundSEException("Service Exterieur not Found");
-        villeDTO.setId_se(serviceExterieur.getId_se());
-        Ville ville = villeMapper.toVille(villeDTO);
+        VilleDTO villeDTO1 = new VilleDTO(
+                villeDTO.id(),
+                villeDTO.designation(),
+                villeDTO.code(),
+                serviceExterieur.getId_se()
+        );
+
+        Ville ville = villeMapper.toVille(villeDTO1);
          Ville savedVille =villeRepositiry.save(ville);
          return villeMapper.toVilleDto(savedVille);
     }
 
     @Override
     public ServiceExterieurDTO saveExterieur(ServiceExterieurDTO serviceExterieurDTO, VilleDTO adresseDTO, List<VilleDTO> villes) throws NotFoundSEException, NotFoundVilleException {
-        serviceExterieurDTO.setVille_id(adresseDTO.getId());
+        ServiceExterieurDTO dto = new ServiceExterieurDTO(
+                serviceExterieurDTO.id_se(),
+                serviceExterieurDTO.nomSE(),
+                serviceExterieurDTO.code(),
+                adresseDTO.id()
+        );
+
         Ville adresse = villeMapper.toVille(adresseDTO);
         villeRepositiry.save(adresse);
-        ServiceExterieur serviceExterieur= serviceExterieurMapper.toServiceExterieur(serviceExterieurDTO);
+        ServiceExterieur serviceExterieur= serviceExterieurMapper.toServiceExterieur(dto);
         adresse.setServiceExterieur(serviceExterieur);
         ServiceExterieur savedSE =serviceExterieurRepository.save(serviceExterieur);
         for (VilleDTO villeDTO : villes) {
-            villeDTO.setId_se(serviceExterieur.getId_se());
-            Ville ville = villeMapper.toVille(villeDTO);
+            VilleDTO Villedto = new VilleDTO(
+                    villeDTO.id(),
+                    villeDTO.designation(),
+                    villeDTO.code(),
+                    serviceExterieur.getId_se()
+            );
+            Ville ville = villeMapper.toVille(Villedto);
             villeRepositiry.save(ville);
         }
         return serviceExterieurMapper.toServiceExterieurDTO(savedSE);
@@ -64,51 +81,22 @@ public class VilleSeServiceImpl implements VilleSeService {
 
     }
     @Override
-    public List<VilleDTO> getVilles() {
-        List<Ville> villes = villeRepositiry.findAll();
-        List<VilleDTO> villeDTOs = new ArrayList<>();
-        villeDTOs =villes.stream().map(villeMapper::toVilleDto).toList();
-        return villeDTOs;
-    }
-    @Override
-    public List<VilleDTO> getServiceExterieurVilles(String nomSE) throws NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findByNomSE(nomSE);
-        if(serviceExterieur == null) throw new NotFoundSEException("Service Exterieur not Found");
-        List<Ville> villes = serviceExterieur.getVilles();
-        List<VilleDTO> villeDTOs = new ArrayList<>();
-        villeDTOs = villes.stream().map(villeMapper::toVilleDto).toList();
-        return villeDTOs;
-    }
-    @Override
-    public VilleDTO getAddresseSE(String nomSE) throws NotFoundVilleException, NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findByNomSE(nomSE);
-        if(serviceExterieur == null) throw new NotFoundSEException("Service Exterieur not Found");
-        Ville ville = serviceExterieur.getAdresse();
-        return villeMapper.toVilleDto(ville);
-    }
-    @Override
-    public ServiceExterieurDTO updateSE(ServiceExterieurDTO serviceExterieurDTO, Long id) throws NotFoundSEException, NotFoundVilleException {
-        serviceExterieurRepository.findById(id).orElseThrow(()->new NotFoundSEException("Service Exterieur not found"));
-        serviceExterieurDTO.setId_se(id);
-        ServiceExterieur serviceExterieur = serviceExterieurMapper.toServiceExterieur(serviceExterieurDTO);
-        ServiceExterieur savedSE = serviceExterieurRepository.save(serviceExterieur);
-        return serviceExterieurMapper.toServiceExterieurDTO(savedSE);
-
+    public List<VilleDTO> getVilles(int page , int size) {
+        List<Ville> villes = villeRepositiry.findAll(PageRequest.of(page,size)).getContent();
+        return villes.stream().map(villeMapper::toVilleDto).toList();
     }
     @Override
     public VilleDTO updateVille(VilleDTO villeDTO, Long id) throws NotFoundVilleException, NotFoundSEException {
         villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
-        villeDTO.setId(id);
-        Ville ville = villeMapper.toVille(villeDTO);
+        VilleDTO dto = new VilleDTO(
+                id,
+                villeDTO.designation(),
+                villeDTO.code(),
+                villeDTO.idSE()
+        );
+        Ville ville = villeMapper.toVille(dto);
         Ville savedVille =villeRepositiry.save(ville);
         return villeMapper.toVilleDto(savedVille);
-    }
-    @Override
-    public List<ServiceExterieurDTO> getServiceExterieurDTOs() {
-        List<ServiceExterieurDTO> serviceExterieurDTOs = new ArrayList<>();
-        List<ServiceExterieur> serviceExterieurs = serviceExterieurRepository.findAll();
-        serviceExterieurDTOs = serviceExterieurs.stream().map(serviceExterieurMapper::toServiceExterieurDTO).toList();
-        return serviceExterieurDTOs;
     }
     @Override
     public VilleDTO getVilleDTO(Long id) throws NotFoundVilleException {
@@ -117,30 +105,26 @@ public class VilleSeServiceImpl implements VilleSeService {
         return villeDTO;
     }
     @Override
-    public VilleDTO getVilleBtName(String nom) throws NotFoundVilleException {
+    public VilleDTO getVilleByName(String nom) throws NotFoundVilleException {
         Ville ville = villeRepositiry.findByDesignation(nom);
         if(ville == null) throw new NotFoundVilleException("Ville not found");
         VilleDTO villeDTO = villeMapper.toVilleDto(ville);
         return villeDTO;
     }
-    @Override
-    public ServiceExterieurDTO getServiceExterieurDTO(Long id) throws NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findById(id)
-                .orElseThrow(()-> new NotFoundSEException("service exterieur not found"));
-        return serviceExterieurMapper.toServiceExterieurDTO(serviceExterieur);
-    }
 
-    @Override
-    public ServiceExterieurDTO getServiceExterieurByName(String nom) throws NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findByNomSE(nom);
-        if(serviceExterieur == null) throw new NotFoundSEException("service exterieur not found");
-        return serviceExterieurMapper.toServiceExterieurDTO(serviceExterieur);
-    }
     @Override
     public void deleteVille(Long id) throws NotFoundVilleException {
         Ville ville = villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
         villeRepositiry.delete(ville);
     }
+
+    @Override
+    public VilleDTO getVilleByCode(String code) throws NotFoundVilleException {
+        Ville ville = villeRepositiry.findByCode(code);
+        return villeMapper.toVilleDto(ville);
+    }
+
+
     public void deleteServiceExterieur(Long id) throws NotFoundSEException {
         ServiceExterieur serviceExterieur = serviceExterieurRepository.findById(id).orElseThrow(()->new NotFoundSEException("service exterieur not found"));
         serviceExterieurRepository.delete(serviceExterieur);

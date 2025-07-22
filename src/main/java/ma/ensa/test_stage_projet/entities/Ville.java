@@ -16,9 +16,9 @@ public class Ville {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(columnDefinition = "NUMBER(10)")
     private Long id_ville ;
-    @Column(length = 255)
+    @Column(length = 255 ,unique = true,nullable = false)
     private String code ;
-    @Column(length = 255)
+    @Column(length = 255 , unique = true , nullable = false)
     private String designation ;
     @CreationTimestamp
     @Column(name = "CREE_LE")

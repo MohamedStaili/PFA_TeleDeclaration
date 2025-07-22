@@ -35,9 +35,9 @@ public class ServiceExterieur {
     private Ville adresse; //pour l'adresse de la service exterieur
     @OneToMany(mappedBy = "serviceExterieur", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<Ville> villes;
-    @Column(length = 255)
-    private String code_se;
-    @Column(length = 255)
+    @Column(length = 255, unique = true , nullable = false)
+    private String codeSE;
+    @Column(length = 255, unique = true , nullable = false)
     private String nomSE;
 //    @OneToMany(mappedBy = "serviceExterieur", fetch = FetchType.LAZY)
 //    private List<PortDechargemnt> portDechargemnt;

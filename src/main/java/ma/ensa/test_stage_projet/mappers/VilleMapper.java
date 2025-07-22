@@ -15,16 +15,21 @@ import org.springframework.stereotype.Service;
 public class VilleMapper {
     private final ServiceExterieurRepository serviceExterieurRepository;
     public VilleDTO toVilleDto(Ville ville) {
-        VilleDTO villeDTO = new VilleDTO();
-        BeanUtils.copyProperties(ville, villeDTO);
-        villeDTO.setId_se(villeDTO.getId_se());
-        return villeDTO;
+        return new VilleDTO(
+                ville.getId_ville(),
+                ville.getDesignation(),
+                ville.getCode(),
+                ville.getServiceExterieur().getId_se()
+        );
+
     }
     public Ville toVille(VilleDTO villeDTO) throws NotFoundSEException {
+        ServiceExterieur serviceExterieur = serviceExterieurRepository
+                .findById(villeDTO.idSE()).orElseThrow(()-> new NotFoundSEException("Service Exterieur not Found"));
         Ville ville = new Ville();
-        BeanUtils.copyProperties(villeDTO, ville);
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findById(villeDTO.getId_se()).
-                orElseThrow(()->new NotFoundSEException("Service not found"));
+        ville.setId_ville(villeDTO.id());
+        ville.setDesignation(villeDTO.designation());
+        ville.setCode(villeDTO.code());
         ville.setServiceExterieur(serviceExterieur);
         return ville;
     }
