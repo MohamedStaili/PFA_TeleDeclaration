@@ -33,7 +33,7 @@ public class ServiceExterieur {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_VILLE")
     private Ville adresse; //pour l'adresse de la service exterieur
-    @OneToMany(mappedBy = "serviceExterieur", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "serviceExterieur",cascade = CascadeType.ALL)
     private List<Ville> villes;
     @Column(length = 255, unique = true , nullable = false)
     private String codeSE;

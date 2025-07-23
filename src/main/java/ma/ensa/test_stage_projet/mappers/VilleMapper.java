@@ -1,36 +1,50 @@
 package ma.ensa.test_stage_projet.mappers;
 
 import lombok.RequiredArgsConstructor;
-import ma.ensa.test_stage_projet.Dtos.VilleDTO;
+import ma.ensa.test_stage_projet.Dtos.CreateVilleDTO;
+import ma.ensa.test_stage_projet.Dtos.ResponseVilleDTO;
 import ma.ensa.test_stage_projet.entities.ServiceExterieur;
 import ma.ensa.test_stage_projet.entities.Ville;
 import ma.ensa.test_stage_projet.exceptions.NotFoundSEException;
 import ma.ensa.test_stage_projet.repositories.ServiceExterieurRepository;
-import ma.ensa.test_stage_projet.repositories.VilleRepositiry;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class VilleMapper {
     private final ServiceExterieurRepository serviceExterieurRepository;
-    public VilleDTO toVilleDto(Ville ville) {
-        return new VilleDTO(
+
+    public Ville fromCreate(CreateVilleDTO createVilleDTO) {
+        ServiceExterieur serviceExterieur =serviceExterieurRepository.findByNomSE(createVilleDTO.nomSE());
+        Ville ville = new Ville();
+        ville.setDesignation(createVilleDTO.designation());
+        ville.setCode(createVilleDTO.code());
+        ville.setServiceExterieur(serviceExterieur);
+        return ville;
+    }
+//    public Ville fromResponse(ResponseVilleDTO responseVilleDTO) {
+//        ServiceExterieur serviceExterieur =serviceExterieurRepository.findByNomSE(responseVilleDTO.serviceExterieur());
+//        Ville ville = new Ville();
+//        ville.setId_ville(responseVilleDTO.id());
+//        ville.setDesignation(responseVilleDTO.designation());
+//        ville.setCode(responseVilleDTO.code());
+//        ville.setServiceExterieur(serviceExterieur);
+//        return ville;
+//    }
+//    public CreateVilleDTO toCreateVilleDTO(Ville ville) {
+//        return new CreateVilleDTO(
+//                ville.getDesignation(),
+//                ville.getCode(),
+//                ville.getServiceExterieur().getNomSE()
+//        );
+//    }
+
+    public ResponseVilleDTO toResponse(Ville ville) {
+        return new ResponseVilleDTO(
                 ville.getId_ville(),
                 ville.getDesignation(),
                 ville.getCode(),
-                ville.getServiceExterieur().getId_se()
+                ville.getServiceExterieur().getNomSE()
         );
-
-    }
-    public Ville toVille(VilleDTO villeDTO) throws NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository
-                .findById(villeDTO.idSE()).orElseThrow(()-> new NotFoundSEException("Service Exterieur not Found"));
-        Ville ville = new Ville();
-        ville.setId_ville(villeDTO.id());
-        ville.setDesignation(villeDTO.designation());
-        ville.setCode(villeDTO.code());
-        ville.setServiceExterieur(serviceExterieur);
-        return ville;
     }
 }
