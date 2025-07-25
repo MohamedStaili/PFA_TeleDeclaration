@@ -34,7 +34,7 @@ public class RegimeImportation {
 
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
-    @OneToMany(mappedBy = "regime_import" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "regime_import" , fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
     private List<ArticleImport> articleImport ;
 //    @OneToMany(mappedBy = "regimeImportation", fetch = FetchType.LAZY)
 //    private List<DeclarationImportation> declarationImportation ;

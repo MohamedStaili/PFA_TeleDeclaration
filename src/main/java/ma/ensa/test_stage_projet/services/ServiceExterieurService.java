@@ -1,13 +1,12 @@
 package ma.ensa.test_stage_projet.services;
 
 import ma.ensa.test_stage_projet.Dtos.CreateServiceExterieurDTO;
-import ma.ensa.test_stage_projet.Dtos.CreateVilleDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseServiceExterieurDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseVilleDTO;
 import ma.ensa.test_stage_projet.exceptions.AddresseAlreadyADD;
 import ma.ensa.test_stage_projet.exceptions.NotFoundSEException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
-import ma.ensa.test_stage_projet.exceptions.VilleNotInSE;
+import ma.ensa.test_stage_projet.exceptions.VilleNotInSEException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public interface ServiceExterieurService {
     Map<String,Object> addAdresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException, AddresseAlreadyADD;
 
     @Transactional(rollbackFor = Exception.class)
-    Map<String,Object> updateAddresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException, VilleNotInSE;
+    Map<String,Object> updateAddresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException, VilleNotInSEException;
 
     List<ResponseVilleDTO> getServiceExterieurVilles(String nomSE, int page, int size) throws NotFoundSEException;
 

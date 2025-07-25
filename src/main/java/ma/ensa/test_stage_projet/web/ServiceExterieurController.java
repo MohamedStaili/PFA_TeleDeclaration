@@ -8,7 +8,7 @@ import ma.ensa.test_stage_projet.Dtos.ResponseVilleDTO;
 import ma.ensa.test_stage_projet.exceptions.AddresseAlreadyADD;
 import ma.ensa.test_stage_projet.exceptions.NotFoundSEException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
-import ma.ensa.test_stage_projet.exceptions.VilleNotInSE;
+import ma.ensa.test_stage_projet.exceptions.VilleNotInSEException;
 import ma.ensa.test_stage_projet.services.ServiceExterieurService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -134,7 +134,7 @@ public class ServiceExterieurController {
             Map<String, Object> map = serviceExterieurService.updateAddresse(idSE , idNewVille);
             return ResponseEntity.ok(map);
 
-        }catch (NotFoundSEException | NotFoundVilleException | VilleNotInSE e){
+        }catch (NotFoundSEException | NotFoundVilleException | VilleNotInSEException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

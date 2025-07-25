@@ -9,7 +9,7 @@ import ma.ensa.test_stage_projet.entities.Ville;
 import ma.ensa.test_stage_projet.exceptions.AddresseAlreadyADD;
 import ma.ensa.test_stage_projet.exceptions.NotFoundSEException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
-import ma.ensa.test_stage_projet.exceptions.VilleNotInSE;
+import ma.ensa.test_stage_projet.exceptions.VilleNotInSEException;
 import ma.ensa.test_stage_projet.mappers.ServiceExterieurMapper;
 import ma.ensa.test_stage_projet.mappers.VilleMapper;
 import ma.ensa.test_stage_projet.repositories.ServiceExterieurRepository;
@@ -61,7 +61,7 @@ public class ServiceExterieurServiceImpl implements ServiceExterieurService {
     }
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Map<String,Object> updateAddresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException , VilleNotInSE {
+    public Map<String,Object> updateAddresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException , VilleNotInSEException {
         ServiceExterieur serviceExterieur = serviceExterieurRepository.findById(idSE)
                 .orElseThrow(() -> new NotFoundSEException("Service Exterieur Not Found"));
         Ville ville = villeRepositiry.findById(idVille).orElseThrow(() -> new NotFoundVilleException("Ville Not Found"));
@@ -78,7 +78,7 @@ public class ServiceExterieurServiceImpl implements ServiceExterieurService {
             return response;
 
         }else {
-            throw new VilleNotInSE("ajouter la ville en premier aux villes attches a cette service exterieur");
+            throw new VilleNotInSEException("ajouter la ville en premier aux villes attches a cette service exterieur");
         }
     }
 
