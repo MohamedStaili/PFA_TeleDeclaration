@@ -15,20 +15,18 @@ public class ServiceExterieurMapper {
     private final VilleRepositiry villeRepositiry;
 
     public ServiceExterieur fromCreate(CreateServiceExterieurDTO createServiceExterieurDTO) {
-        Ville ville = villeRepositiry.findByDesignation(createServiceExterieurDTO.adresse());
         ServiceExterieur serviceExterieur = new ServiceExterieur();
-        serviceExterieur.setNomSE(createServiceExterieurDTO.adresse());
         serviceExterieur.setCodeSE(createServiceExterieurDTO.code());
-        serviceExterieur.setAdresse(ville);
+        serviceExterieur.setNomSE(createServiceExterieurDTO.nomSE());
         return serviceExterieur;
     }
 
     public ResponseServiceExterieurDTO toResponse(ServiceExterieur serviceExterieur) {
         return new ResponseServiceExterieurDTO(
-                serviceExterieur.getId_se(),
+                serviceExterieur.getIdSE(),
                 serviceExterieur.getNomSE(),
                 serviceExterieur.getCodeSE(),
-                serviceExterieur.getAdresse().getDesignation()
+                serviceExterieur.getAdresse() ==null ? "pas d'adresse" : serviceExterieur.getAdresse().getDesignation()
         );
     }
 }

@@ -29,26 +29,10 @@ public class VilleServiceImpl implements VilleService {
     private final ServiceExterieurMapper serviceExterieurMapper;
     @Transactional(rollbackFor = NotFoundSEException.class)
     @Override
-    public ResponseVilleDTO saveVille(CreateVilleDTO villeDTO) throws NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findByNomSE(villeDTO.nomSE());
-        if (serviceExterieur == null) throw new NotFoundSEException("Service Exterieur not Found");
-
+    public ResponseVilleDTO saveVille(CreateVilleDTO villeDTO){
         Ville ville = villeMapper.fromCreate(villeDTO);
-         Ville savedVille =villeRepositiry.save(ville);
+        Ville savedVille = villeRepositiry.save(ville);
          return villeMapper.toResponse(savedVille);
-    }
-    @Transactional(rollbackFor = {NotFoundSEException.class, NotFoundVilleException.class})
-    @Override
-    public void deleteVilleFromSE(String nomSE, String nomVille) throws NotFoundVilleException, NotFoundSEException {
-        ServiceExterieur serviceExterieur = serviceExterieurRepository.findByNomSE(nomSE);
-        if(serviceExterieur == null) throw new NotFoundSEException("Service Exterieur not Found");
-        Ville ville = villeRepositiry.findByDesignation(nomVille);
-        if(ville==null) throw new NotFoundVilleException("ville not found");
-
-        serviceExterieur.getVilles().remove(ville);
-        villeRepositiry.save(ville);
-        serviceExterieurRepository.save(serviceExterieur);
-
     }
     @Override
     public Map<String,Object> getVilles(int page , int size) {
@@ -63,7 +47,7 @@ public class VilleServiceImpl implements VilleService {
         response.put("totalElements",villePage.getTotalElements());
         return response;
     }
-    @Transactional(rollbackFor = {NotFoundSEException.class, NotFoundVilleException.class})
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ResponseVilleDTO updateVille(CreateVilleDTO villeDTO, Long id) throws NotFoundVilleException, NotFoundSEException {
         villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
@@ -86,10 +70,15 @@ public class VilleServiceImpl implements VilleService {
         return villeDTO;
     }
 
-    @Transactional(rollbackFor = NotFoundVilleException.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteVille(Long id) throws NotFoundVilleException {
         Ville ville = villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
+        if(ville.getEstAdresseSE()){
+            ServiceExterieur serviceExterieur = ville.getServiceExterieur();
+            serviceExterieur.setAdresseVilleId(null);
+            serviceExterieurRepository.save(serviceExterieur);
+        }
         villeRepositiry.delete(ville);
     }
 

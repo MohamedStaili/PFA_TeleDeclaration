@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface VilleRepositiry extends JpaRepository<Ville, Long> {
     Ville findByDesignation(String nom);
     Page<Ville> findAll(Pageable pageable);
     //Page<Ville> findByServiceExterieur(ServiceExterieur serviceExterieur,Pageable pageable);
     Ville findByCode(String code);
+    List<Ville> findByServiceExterieurAndEstAdresseSE(ServiceExterieur serviceExterieur,boolean estAdresseSE);
 }

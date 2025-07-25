@@ -8,8 +8,7 @@ import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
 import java.util.Map;
 
 public interface VilleService {
-    ResponseVilleDTO saveVille(CreateVilleDTO villeDTO) throws NotFoundSEException;
-     void deleteVilleFromSE(String nomSE, String nomVille) throws NotFoundVilleException, NotFoundSEException;
+    ResponseVilleDTO saveVille(CreateVilleDTO villeDTO) ;
 
      Map<String,Object> getVilles(int page, int size);
 

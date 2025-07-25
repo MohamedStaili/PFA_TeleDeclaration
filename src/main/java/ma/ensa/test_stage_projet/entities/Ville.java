@@ -8,18 +8,20 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Ville {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(columnDefinition = "NUMBER(10)")
-    private Long id_ville ;
-    @Column(length = 255 ,unique = true,nullable = false)
-    private String code ;
-    @Column(length = 255 , unique = true , nullable = false)
-    private String designation ;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id_ville;
+
+    @Column(length = 255, unique = true, nullable = false)
+    private String code;
+
+    @Column(length = 255, unique = true, nullable = false)
+    private String designation;
+
     @CreationTimestamp
     @Column(name = "CREE_LE")
     private Date creeLe;
@@ -33,14 +35,11 @@ public class Ville {
 
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
-//    @OneToOne(mappedBy = "adresse", fetch = FetchType.EAGER)
-//    private ServiceExterieur adresse_se ;
-    @JoinColumn(name = "ID_SERVICE_EXTERIEUR",nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
-    private ServiceExterieur serviceExterieur;//cette ville est sous quelle SE
-//    @OneToMany(mappedBy = "ville")
-//    private List<Operateur> operateurs ;
-//    @OneToMany(mappedBy = "ville" , fetch = FetchType.LAZY)
-//    private List<PortDechargemnt> portDechargemnt ;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_SERVICE_EXTERIEUR")
+    private ServiceExterieur serviceExterieur;
+
+    @Column(name = "EST_ADRESSE_SE")
+    private Boolean estAdresseSE = false;
 }

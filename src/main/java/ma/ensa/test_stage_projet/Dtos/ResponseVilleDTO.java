@@ -4,6 +4,7 @@ public record ResponseVilleDTO(
         Long id ,
         String designation ,
         String code ,
-        String serviceExterieur
+        String serviceExterieur,
+        String centre
 )
 {}

@@ -15,11 +15,9 @@ public class VilleMapper {
     private final ServiceExterieurRepository serviceExterieurRepository;
 
     public Ville fromCreate(CreateVilleDTO createVilleDTO) {
-        ServiceExterieur serviceExterieur =serviceExterieurRepository.findByNomSE(createVilleDTO.nomSE());
         Ville ville = new Ville();
         ville.setDesignation(createVilleDTO.designation());
         ville.setCode(createVilleDTO.code());
-        ville.setServiceExterieur(serviceExterieur);
         return ville;
     }
 //    public Ville fromResponse(ResponseVilleDTO responseVilleDTO) {
@@ -44,7 +42,8 @@ public class VilleMapper {
                 ville.getId_ville(),
                 ville.getDesignation(),
                 ville.getCode(),
-                ville.getServiceExterieur().getNomSE()
+                ville.getServiceExterieur()==null ? "n'est pas attache" : ville.getServiceExterieur().getNomSE(),
+                ville.getEstAdresseSE() ? "Oui" : "Non"
         );
     }
 }

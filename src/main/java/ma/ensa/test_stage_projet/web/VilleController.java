@@ -49,18 +49,15 @@ public class VilleController {
             };
             return ResponseEntity.ok(villeDTO);
             } catch (NotFoundVilleException e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PostMapping()
     public ResponseEntity<?> createVille(@RequestBody @Valid CreateVilleDTO villeDTO) {
-        try{
             ResponseVilleDTO saveDto = villeService.saveVille(villeDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(saveDto);
-        }catch (NotFoundSEException e){
-            return  ResponseEntity.notFound().build();
-        }
+
     }
 
     @PutMapping("/{id}")
