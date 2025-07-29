@@ -18,7 +18,7 @@ public class ArticleImport {
     //@Column(columnDefinition = "NUMBER(14)")
     private Long id ;
     @Column(length = 50)
-    private String designation_dc ;
+    private String designationDc ;
     @Column(length = 10)
     private String ngp ;
     @CreationTimestamp
@@ -34,13 +34,13 @@ public class ArticleImport {
 
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "regime_id")
     private RegimeImportation regime_import ;
 //    @OneToMany(mappedBy = "articleImport", fetch = FetchType.EAGER)
 //    @JoinColumn(columnDefinition = "NUMBER(14)")
 //    private List<DeclarationImportation> declaration_imports ;
     @JoinColumn(name = "categorie_id", nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Categorie categorie ;
 }

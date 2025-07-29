@@ -54,7 +54,7 @@ public class RegimeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @GetMapping()
+    @GetMapping("/all")
     public ResponseEntity<?> getAllRegimes() {
         List<ResponseRegimeDTO> responseRegimeDTOS = regimeService.findAllRegimes();
         Map<String,Object> response = new HashMap<>();
@@ -63,9 +63,26 @@ public class RegimeController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getRegime(@RequestParam Long id,@RequestParam String designation , @RequestParam String code)  {
+    public ResponseEntity<?> getRegime(@RequestParam(required = false) Long id,
+                                       @RequestParam(required = false) String designation ,
+                                       @RequestParam(required = false) String code)  {
         long nbParams = Stream.of(id,designation,code).filter(Objects::nonNull).count();
-        if(nbParams==null) throw new
+        if(nbParams!=1) return ResponseEntity.badRequest().body("nombre des parametres n'est pas autorisé");
+        try{
+            ResponseRegimeDTO regimeDTO = switch ((int) nbParams){
+                case 1 -> {
+                    if(id != null) yield regimeService.findById(id);
+                    if(designation != null) yield regimeService.findByDesignation(designation);
+                    yield regimeService.findByCode(code);
+                }
+                default -> throw new IllegalStateException();
+            };
+            Map<String,Object> response = new HashMap<>();
+            response.put("regime_importation",regimeDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch(NotFoundRegimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
+        }
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,6 @@ public class Categorie {
 
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
-//    @OneToMany(mappedBy = "categorie", fetch = FetchType.EAGER)
-//    private List<ArticleImport> articleImports;
+    @OneToMany(mappedBy = "categorie", fetch = FetchType.LAZY)
+    private List<ArticleImport> articleImports = new ArrayList<>();
 }

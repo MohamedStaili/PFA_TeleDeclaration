@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class RegimeImportation {
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
     @OneToMany(mappedBy = "regime_import" , fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
-    private List<ArticleImport> articleImport ;
+    private List<ArticleImport> articleImport=new ArrayList<>();
 //    @OneToMany(mappedBy = "regimeImportation", fetch = FetchType.LAZY)
 //    private List<DeclarationImportation> declarationImportation ;
 }
