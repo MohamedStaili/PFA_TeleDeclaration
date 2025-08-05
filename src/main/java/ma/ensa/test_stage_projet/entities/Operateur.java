@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ensa.test_stage_projet.repositories.OperateurRepository;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.util.Date;
 import java.util.List;
 
@@ -17,12 +17,12 @@ public class Operateur {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(columnDefinition = "NUMBER(10)")
     private Long id_operateur;
-    @Column(length = 40)
+    @Column(length = 40 , unique = true , nullable = false)
     private String code ;
     @Column(length = 320)
     private String raison_soc ;
-    @Column(length = 10)
-    private Long code_cptable ;
+    @Column(length = 10 ,unique = true , nullable = false )
+    private Long codeCptable ;
     @Column(length = 1)
     private Long actif ;
     @Column(length = 10)
@@ -49,7 +49,7 @@ public class Operateur {
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
     @JoinColumn(name = "id_ville", nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Ville ville;
     @OneToMany(mappedBy = "operateur_imporatateur" , fetch = FetchType.LAZY)
     private List<DeclarationImportation> declaration_importations;

@@ -61,27 +61,39 @@ public class RegimeController {
         response.put("regimes_importations",responseRegimeDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRegime(@PathVariable Long id)  {
+        Map<String,Object> response = new HashMap<>();
+        try{
+            ResponseRegimeDTO responseRegimeDTO = regimeService.findById(id);
+            response.put("regime",responseRegimeDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NotFoundRegimeException e) {
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
     @GetMapping()
-    public ResponseEntity<?> getRegime(@RequestParam(required = false) Long id,
-                                       @RequestParam(required = false) String designation ,
+    public ResponseEntity<?> getRegimeBy(@RequestParam(required = false) String designation ,
                                        @RequestParam(required = false) String code)  {
-        long nbParams = Stream.of(id,designation,code).filter(Objects::nonNull).count();
+        Map<String,Object> response = new HashMap<>();
+        long nbParams = Stream.of(designation,code).filter(Objects::nonNull).count();
         if(nbParams!=1) return ResponseEntity.badRequest().body("nombre des parametres n'est pas autorisé");
         try{
             ResponseRegimeDTO regimeDTO = switch ((int) nbParams){
                 case 1 -> {
-                    if(id != null) yield regimeService.findById(id);
                     if(designation != null) yield regimeService.findByDesignation(designation);
                     yield regimeService.findByCode(code);
                 }
                 default -> throw new IllegalStateException();
             };
-            Map<String,Object> response = new HashMap<>();
             response.put("regime_importation",regimeDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch(NotFoundRegimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
         }
     }

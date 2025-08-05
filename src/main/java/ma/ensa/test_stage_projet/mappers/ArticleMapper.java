@@ -9,6 +9,7 @@ import ma.ensa.test_stage_projet.entities.RegimeImportation;
 import ma.ensa.test_stage_projet.exceptions.NotFoundCategorieException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundRegimeException;
 import ma.ensa.test_stage_projet.repositories.CategorieRepository;
+import ma.ensa.test_stage_projet.repositories.OperateurRepository;
 import ma.ensa.test_stage_projet.repositories.RegimeImportationRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class ArticleMapper {
     private final RegimeImportationRepository regimeImportationRepository;
     private final CategorieRepository categorieRepository;
+
 
     public ArticleImport fromCreate(CreateArticleDTO createArticleDTO) throws NotFoundRegimeException, NotFoundCategorieException {
         RegimeImportation regimeImportation = regimeImportationRepository.findById(createArticleDTO.regimeId())

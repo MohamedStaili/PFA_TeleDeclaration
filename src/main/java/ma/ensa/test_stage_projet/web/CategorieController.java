@@ -63,28 +63,31 @@ public class CategorieController {
         map.put("categorie", responseCategorieDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(map);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategorie(@PathVariable Long id){
+        Map<String,Object> response = new HashMap<>();
+        try{
+            ResponseCategorieDTO responseCategorieDTO = categorieService.findById(id);
+            response.put("categorie",responseCategorieDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NotFoundCategorieException e) {
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
     @GetMapping()
-    public ResponseEntity<?> getCategorie(@RequestParam(required = false) Long id
-            , @RequestParam(required = false) String designation){
-
-        long nbParams = Stream.of(id,designation).filter(Objects::nonNull).count();
-        if(nbParams != 1) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("nombre de parametres n'est pas autorise");
-
+    public ResponseEntity<?> getCategorieByDesignation(@RequestParam String designation){
+        Map<String,Object> response = new HashMap<>();
         try {
-            ResponseCategorieDTO responseCategorieDTO = switch ((int) nbParams){
-                case 1 -> {
-                    if(id!=null) yield categorieService.findById(id);
-                    yield categorieService.findByDesignation(designation);
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + nbParams);
-            };
-            Map<String, Object> map = new HashMap<>();
-            map.put("categorie", responseCategorieDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+            ResponseCategorieDTO responseCategorieDTO = categorieService.findByDesignation(designation);
+            response.put("categorie",responseCategorieDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
         }catch(NotFoundCategorieException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
         }
     }

@@ -74,22 +74,25 @@ public class ArticleController {
         response.put("articles",responseArticleDTOS);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getArticle(@PathVariable Long id){
+        Map<String,Object> response = new HashMap<>();
+        try {
+            ResponseArticleDTO responseArticleDTO = articleService.getArticle(id);
+            response.put("article",responseArticleDTO);
+            return ResponseEntity.ok(response);
 
+        }catch (NotFoundArticleException e){
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
     @GetMapping()
-    public ResponseEntity<?> getArticle(@RequestParam(required = false) Long id ,
-                                        @RequestParam(required = false) String designation){
+    public ResponseEntity<?> getArticleByDesignation(@RequestParam String designation){
         Map<String,Object> response = new HashMap<>();
       try{
-          long nbParams = Stream.of( id , designation ).filter(Objects::nonNull).count();
-          if(nbParams !=1) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("nombre des parametres non autorise");
-          ResponseArticleDTO responseArticleDTO =
-                  switch ((int) nbParams){
-                      case 1 -> {
-                          if(id != null) yield articleService.getArticle(id);
-                          yield articleService.getArticleByDesignation(designation);
-                      }
-                      default -> throw new IllegalStateException("Unexpected value: " + nbParams);
-                  };
+          ResponseArticleDTO responseArticleDTO = articleService.getArticleByDesignation(designation);
           response.put("article",responseArticleDTO);
           return ResponseEntity.ok(response);
 

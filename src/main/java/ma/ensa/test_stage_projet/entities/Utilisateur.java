@@ -14,8 +14,11 @@ import java.util.List;
 public class Utilisateur {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String login;
+    private String email;
     private String password;
+    private boolean active = false;
+    private String tokenActivation ;
+    private String passwordResetToken;
     @CreationTimestamp
     @Column(name = "CREE_LE")
     private Date creeLe;
@@ -26,18 +29,15 @@ public class Utilisateur {
     @UpdateTimestamp
     @Column(name = "MODIFIE_LE")
     private Date modifieLe;
-
     @Column(name = "MODIFIE_PAR", length = 30)
     private String modifiePar;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     //@JoinColumn(columnDefinition = "NUMBER(14)")
     private Operateur operateur;
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<DeclarationImportation> declarationImportations;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Profile profile;
     @ManyToOne
     Site site;
-
-
 }

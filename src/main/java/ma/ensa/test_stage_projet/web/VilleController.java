@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -29,19 +30,29 @@ public class VilleController {
 
         return  ResponseEntity.ok(response);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getVille(@PathVariable Long id) {
+        Map<String,Object> response = new HashMap<>();
+        try{
+            ResponseVilleDTO villeDTO = villeService.getVilleDTO(id);
+            response.put("ville",villeDTO);
+            return ResponseEntity.ok(response);
+        } catch (NotFoundVilleException e) {
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
     @GetMapping()
-    public ResponseEntity<?> getVille(@RequestParam(required = false) Long id,
-                                          @RequestParam(required = false) String nom,
+    public ResponseEntity<?> getVilleBy(@RequestParam(required = false) String nom,
                                           @RequestParam(required = false) String code) {
-        long nbParams = Stream.of(id,nom,code).filter(Objects::nonNull).count();
+        long nbParams = Stream.of(nom,code).filter(Objects::nonNull).count();
         if(nbParams !=1){
             return ResponseEntity.badRequest().body("vous devez specifier un seul parametre");
         }
         try{
             ResponseVilleDTO villeDTO = switch ((int) nbParams){
                 case 1 ->{
-                    if (id != null) yield villeService.getVilleDTO(id);
                     if (nom != null) yield villeService.getVilleByName(nom);
                     yield villeService.getVilleByCode(code);
                 }

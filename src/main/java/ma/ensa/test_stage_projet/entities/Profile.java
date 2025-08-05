@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
-
+// Monitrie , Importateur , Commerçant , Admin , ServiceExterieur
 @Entity
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Profile {

@@ -32,14 +32,25 @@ public class ServiceExterieurController {
         return ResponseEntity.ok(response);
 
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getServiceExterieur(@PathVariable("id") Long id) {
+        try{
+           Map<String,Object> map=
+                    serviceExterieurService.getServiceExterieurDTO(id);
+           return ResponseEntity.ok(map);
+        } catch (NotFoundSEException e) {
+            Map<String,Object> response = new HashMap<>();
+            response.put("message","error");
+            response.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
     @GetMapping()
-    public ResponseEntity<?> getServiceExterieur(
-            @RequestParam(required = false) Long id,
+    public ResponseEntity<?> getServiceExterieurBy(
             @RequestParam(required = false) String nomSE,
             @RequestParam(required = false) String codeSE
     )  {
-        long nbParams = Stream.of(id,nomSE,codeSE).filter(Objects::nonNull).count();
+        long nbParams = Stream.of(nomSE,codeSE).filter(Objects::nonNull).count();
 
         if(nbParams !=1){
             return ResponseEntity.badRequest().body("vous devez specifier un seul parametre");
@@ -48,7 +59,6 @@ public class ServiceExterieurController {
         try {
             Map<String,Object> map = switch ((int) nbParams){
                 case 1 -> {
-                    if (id != null) yield serviceExterieurService.getServiceExterieurDTO(id);
                     if(nomSE != null) yield  serviceExterieurService.getServiceExterieurByName(nomSE);
                     yield  serviceExterieurService.getServiceExterieurDTOByCode(codeSE);
                 }
