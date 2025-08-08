@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="${subject}">Email Institutionnel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .container {
+            max-width: 680px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+        }
+        .header {
+            border-bottom: 1px solid #dcdcdc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .brand {
+            font-size: 24px;
+            color: #003366;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        h3 {
+            color: #003366;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        a {
+            color: #0056b3;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <a href="#" class="brand">ONICL - Office National Interprofessionnel des Céréales et des Légumineuses</a>
+    </div>
+
+    <h3>Bonjour, <span th:text="${name}">Utilisateur</span>,</h3>
+
+    <p>
+        Nous vous remercions pour votre inscription.<br>
+        Veuillez cliquer sur le lien ci-dessous pour activer votre compte :
+    </p>
+
+    <p>
+        <a th:href="${link}" th:text="${link}">Lien d'activation</a>
+    </p>
+
+    <p>
+        Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet email.
+    </p>
+
+    <div class="footer">
+        <p>Cet email vous a été envoyé automatiquement, merci de ne pas y répondre.</p>
+        <p>© ONICL - Tous droits réservés.</p>
+    </div>
+</div>
+</body>
+</html>

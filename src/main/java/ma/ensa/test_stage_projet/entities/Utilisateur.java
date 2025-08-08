@@ -9,6 +9,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 @Entity
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Utilisateur {
@@ -18,7 +20,9 @@ public class Utilisateur {
     private String password;
     private boolean active = false;
     private String tokenActivation ;
+    private Date expirationDateActivationToken;
     private String passwordResetToken;
+    private Date expirationDateResetToken;
     @CreationTimestamp
     @Column(name = "CREE_LE")
     private Date creeLe;
@@ -40,4 +44,13 @@ public class Utilisateur {
     private Profile profile;
     @ManyToOne
     Site site;
+
+    public String generateToken(){
+        return UUID.randomUUID().toString();
+    }
+    public Date generateExpirationDate(){
+        long currentTime = System.currentTimeMillis();
+        long expirationTime = currentTime + (1000*60*10);
+        return new Date(expirationTime);
+    }
 }
