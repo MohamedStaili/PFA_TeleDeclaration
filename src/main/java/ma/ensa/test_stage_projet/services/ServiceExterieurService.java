@@ -3,10 +3,7 @@ package ma.ensa.test_stage_projet.services;
 import ma.ensa.test_stage_projet.Dtos.CreateServiceExterieurDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseServiceExterieurDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseVilleDTO;
-import ma.ensa.test_stage_projet.exceptions.AddresseAlreadyADD;
-import ma.ensa.test_stage_projet.exceptions.NotFoundSEException;
-import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
-import ma.ensa.test_stage_projet.exceptions.VilleNotInSEException;
+import ma.ensa.test_stage_projet.exceptions.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,29 +13,29 @@ public interface ServiceExterieurService {
     Map<String,Object> saveExterieur(CreateServiceExterieurDTO serviceExterieurDTO) ;
 
     @Transactional(rollbackFor = Exception.class)
-    Map<String,Object> addAdresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException, AddresseAlreadyADD;
+    Map<String,Object> addAdresse(Long idSE, Long idVille) ;
 
     @Transactional(rollbackFor = Exception.class)
-    Map<String,Object> updateAddresse(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException, VilleNotInSEException;
+    Map<String,Object> updateAddresse(Long idSE, Long idVille) ;
 
-    List<ResponseVilleDTO> getServiceExterieurVilles(String nomSE, int page, int size) throws NotFoundSEException;
+    List<ResponseVilleDTO> getServiceExterieurVilles(String nomSE, int page, int size) ;
 
-    ResponseVilleDTO getAddresseSE(String nomSE) throws NotFoundVilleException, NotFoundSEException;
+    ResponseVilleDTO getAddresseSE(String nomSE) ;
 
-    ResponseServiceExterieurDTO updateSE(CreateServiceExterieurDTO serviceExterieurDTO, Long id) throws NotFoundSEException;
+    ResponseServiceExterieurDTO updateSE(CreateServiceExterieurDTO serviceExterieurDTO, Long id) ;
     List<Map<String, Object>> getServiceExterieurDTOs();
-    Map<String,Object> getServiceExterieurDTO(Long id) throws NotFoundSEException;
+    Map<String,Object> getServiceExterieurDTO(Long id) ;
 
-    Map<String, Object> getServiceExterieurByName(String nom) throws NotFoundSEException;
-    Map<String, Object> getServiceExterieurDTOByCode(String code) throws NotFoundSEException;
+    Map<String, Object> getServiceExterieurByName(String nom) ;
+    Map<String, Object> getServiceExterieurDTOByCode(String code) ;
 
-    void deleteServiceExterieur(Long id) throws NotFoundSEException;
-
-    @Transactional(rollbackFor = Exception.class)
-    ResponseVilleDTO addVilleToSE(Long idSE, Long idVille) throws NotFoundSEException , NotFoundVilleException;
+    void deleteServiceExterieur(Long id);
 
     @Transactional(rollbackFor = Exception.class)
-    ResponseVilleDTO deleteVilleFromSE(Long idSE, Long idVille) throws NotFoundSEException,NotFoundVilleException;
+    ResponseVilleDTO addVilleToSE(Long idSE, Long idVille) ;
+
+    @Transactional(rollbackFor = Exception.class)
+    ResponseVilleDTO deleteVilleFromSE(Long idSE, Long idVille) ;
 
     //void deleteVilleFromSE(Long idSE , Long idVille) throws NotFoundVilleException, NotFoundSEException;
 }

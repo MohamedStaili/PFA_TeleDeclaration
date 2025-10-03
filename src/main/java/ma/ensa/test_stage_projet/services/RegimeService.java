@@ -7,11 +7,11 @@ import ma.ensa.test_stage_projet.exceptions.NotFoundRegimeException;
 import java.util.List;
 
 public interface RegimeService {
-    ResponseRegimeDTO findByDesignation(String designation) throws NotFoundRegimeException;
-    ResponseRegimeDTO findByCode(String code) throws NotFoundRegimeException;
-    ResponseRegimeDTO findById(Long id) throws NotFoundRegimeException;
+    ResponseRegimeDTO findByDesignation(String designation) ;
+    ResponseRegimeDTO findByCode(String code) ;
+    ResponseRegimeDTO findById(Long id) ;
     ResponseRegimeDTO addRegimeImportation(CreateRegimeDTO createRegimeDTO);
-    ResponseRegimeDTO updateRegimeImportation(CreateRegimeDTO createRegimeDTO,Long id) throws NotFoundRegimeException;
-    void deleteRegimeImportation(Long id) throws NotFoundRegimeException;
+    ResponseRegimeDTO updateRegimeImportation(CreateRegimeDTO createRegimeDTO,Long id) ;
+    void deleteRegimeImportation(Long id) ;
     List<ResponseRegimeDTO> findAllRegimes();
 }

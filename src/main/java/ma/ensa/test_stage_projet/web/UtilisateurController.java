@@ -26,41 +26,30 @@ public class UtilisateurController
     @PostMapping
     public ResponseEntity<?> createUtilisateur(@RequestBody @Valid CreateUtilisateurDTO createUtilisateurDTO) {
         Map<String,Object> map = new HashMap<>();
-        try{
             ResponseUtilisateurDTO responseUtilisateurDTO = utilisateurService.addUtilisateur(createUtilisateurDTO);
             map.put("message", "new utilisateur created");
             map.put("utilisateur", responseUtilisateurDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(map);
-        }catch (NotFoundOperateurException | NotFoundProfileException e){
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUtilisateur(@PathVariable Long id) {
         Map<String,Object> map = new HashMap<>();
-        try{
             utilisateurService.deleteUtilisateur(id);
             //map.put("message", "utilisateur deleted");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (NotFoundUtilisateur | NotUtilisatuerException e) {
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUtilisateurById(@PathVariable Long id) {
         Map<String,Object> map = new HashMap<>();
-        try{
+
             ResponseUtilisateurDTO responseUtilisateurDTO = utilisateurService.getUtilisateur(id);
             map.put("utilisateur", responseUtilisateurDTO);
             return ResponseEntity.status(HttpStatus.OK).body(map);
-        } catch (NotFoundUtilisateur e) {
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
+
     }
 
     @GetMapping("/all")
@@ -74,13 +63,9 @@ public class UtilisateurController
     @GetMapping
     public ResponseEntity<?> getAllUtilisateursByEmail(@RequestParam String email) {
         Map<String,Object> map = new HashMap<>();
-        try{
             ResponseUtilisateurDTO responseUtilisateurDTO = utilisateurService.getUtilisateurByEmail(email);
             map.put("utilisateurs", responseUtilisateurDTO);
             return ResponseEntity.status(HttpStatus.OK).body(map);
-        } catch (NotFoundUtilisateur e) {
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
+
     }
 }

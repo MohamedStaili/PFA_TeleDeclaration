@@ -27,44 +27,27 @@ public class ArticleController {
     @PostMapping()
     public ResponseEntity<?> saveArticle(@RequestBody @Valid CreateArticleDTO createArticleDTO) {
         Map<String,Object> response = new HashMap<>();
-        try{
             ResponseArticleDTO responseArticleDTO = articleService.addArticle(createArticleDTO);
             response.put("message","article added");
             response.put("article",responseArticleDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (NotFoundCategorieException | NotFoundRegimeException e) {
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateArticle(@PathVariable Long id , @RequestBody @Valid CreateArticleDTO createArticleDTO){
         Map<String,Object> response = new HashMap<>();
-        try{
             ResponseArticleDTO responseArticleDTO = articleService.updateArticle(id,createArticleDTO);
             response.put("message","article updated");
             response.put("article",responseArticleDTO);
             return ResponseEntity.ok(response);
-        }catch (NotFoundRegimeException | NotFoundCategorieException | NotFoundArticleException e) {
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteArticle(@PathVariable Long id){
         Map<String,Object> response = new HashMap<>();
-        try {
             articleService.deleteArticle(id);
             response.put("message","article deleted");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-        } catch (NotFoundArticleException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @GetMapping("/all")
@@ -77,30 +60,16 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getArticle(@PathVariable Long id){
         Map<String,Object> response = new HashMap<>();
-        try {
             ResponseArticleDTO responseArticleDTO = articleService.getArticle(id);
             response.put("article",responseArticleDTO);
             return ResponseEntity.ok(response);
-
-        }catch (NotFoundArticleException e){
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
     @GetMapping()
     public ResponseEntity<?> getArticleByDesignation(@RequestParam String designation){
         Map<String,Object> response = new HashMap<>();
-      try{
           ResponseArticleDTO responseArticleDTO = articleService.getArticleByDesignation(designation);
           response.put("article",responseArticleDTO);
           return ResponseEntity.ok(response);
-
-      } catch (NotFoundArticleException e) {
-          response.put("message","error");
-          response.put("error",e.getMessage());
-          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-      }
     }
 
 }

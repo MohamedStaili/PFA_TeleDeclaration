@@ -33,15 +33,10 @@ public class VilleController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getVille(@PathVariable Long id) {
         Map<String,Object> response = new HashMap<>();
-        try{
+
             ResponseVilleDTO villeDTO = villeService.getVilleDTO(id);
             response.put("ville",villeDTO);
             return ResponseEntity.ok(response);
-        } catch (NotFoundVilleException e) {
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
     @GetMapping()
     public ResponseEntity<?> getVilleBy(@RequestParam(required = false) String nom,
@@ -50,7 +45,6 @@ public class VilleController {
         if(nbParams !=1){
             return ResponseEntity.badRequest().body("vous devez specifier un seul parametre");
         }
-        try{
             ResponseVilleDTO villeDTO = switch ((int) nbParams){
                 case 1 ->{
                     if (nom != null) yield villeService.getVilleByName(nom);
@@ -59,10 +53,9 @@ public class VilleController {
                 default -> throw new IllegalStateException();
             };
             return ResponseEntity.ok(villeDTO);
-            } catch (NotFoundVilleException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
         }
-    }
+
 
     @PostMapping()
     public ResponseEntity<?> createVille(@RequestBody @Valid CreateVilleDTO villeDTO) {
@@ -73,23 +66,17 @@ public class VilleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateVille(@PathVariable Long id, @RequestBody @Valid CreateVilleDTO villeDTO) {
-        try{
             ResponseVilleDTO saveDto = villeService.updateVille(villeDTO,id);
             return ResponseEntity.ok(saveDto);
-        }catch (NotFoundSEException | NotFoundVilleException e){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+
 
     }
 
     @DeleteMapping("/{id}")
 
     public ResponseEntity<?> deleteVille(@PathVariable Long id) {
-        try{
             villeService.deleteVille(id);
             return ResponseEntity.noContent().build();
-        }catch (NotFoundVilleException e){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+
     }
 }

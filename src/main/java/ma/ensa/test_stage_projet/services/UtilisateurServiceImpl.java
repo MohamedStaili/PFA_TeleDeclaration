@@ -11,6 +11,7 @@ import ma.ensa.test_stage_projet.repositories.UtilisateurRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +26,13 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final UtilisateurRepository utilisateurRepository;
     private final UtilisatuerMapper utilisatuerMapper;
-    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public ResponseUtilisateurDTO addUtilisateur(CreateUtilisateurDTO createUtilisateurDTO) throws NotFoundOperateurException, NotFoundProfileException {
+    public ResponseUtilisateurDTO addUtilisateur(CreateUtilisateurDTO createUtilisateurDTO)
+            throws NotFoundOperateurException, NotFoundProfileException, DuplicateEmailException {
+        Utilisateur utilisateurValidate = utilisateurRepository.findByEmail(createUtilisateurDTO.email());
+        if(utilisateurValidate != null) throw new DuplicateEmailException("Email already exists");
         Utilisateur utilisateur = utilisatuerMapper.fromCreate(createUtilisateurDTO);
         String token = utilisateur.generateToken();
         utilisateur.setTokenActivation(token);
@@ -37,14 +42,18 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         applicationEventPublisher.publishEvent(new OnRegistrationCompleteEvent(this, savedUtilisateur));
         return utilisatuerMapper.toResponse(savedUtilisateur);
     }
-    @Transactional(rollbackFor = Exception.class)
+    //authentication.name veut ce que renvoie UserDetails.getUsername() dans ce cas c'est email
+    @PreAuthorize("@securityEvaluator.isOwnerOrAdmin(" +
+            "@utilisateurServiceImpl.loadUtilisateur(#id).email, authentication)")
+    @Transactional
     @Override
     public ResponseUtilisateurDTO updateUtilisateur(Long id, CreateUtilisateurDTO createUtilisateurDTO) {
         return null;
     }
-    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public void deleteUtilisateur(Long id) throws NotFoundUtilisateur, NotUtilisatuerException {
+    public void deleteUtilisateur(Long id)  {
         Utilisateur utilisateur = utilisateurRepository.findById(id)
                 .orElseThrow(() -> new NotFoundUtilisateur("user not found with id :" + id));
         if (utilisateur.getOperateur() == null) throw new NotUtilisatuerException("this is not an User with id: " + id);
@@ -54,25 +63,30 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 //        utilisateur.setSite(null);
         utilisateur.setActive(false);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public ResponseUtilisateurDTO getUtilisateur(Long id) throws NotFoundUtilisateur {
+    public ResponseUtilisateurDTO getUtilisateur(Long id)  {
         Utilisateur utilisateur = utilisateurRepository.findById(id)
                 .orElseThrow(() -> new NotFoundUtilisateur("user not found with id :" + id));
         return utilisatuerMapper.toResponse(utilisateur);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<ResponseUtilisateurDTO> getUtilisateurs(int page , int size) {
         Page<Utilisateur> utilisateurs = utilisateurRepository.findAllByOperateurIsNotNull(PageRequest.of(page,size));
         return utilisateurs.stream().map(utilisatuerMapper::toResponse).collect(Collectors.toList());
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public ResponseUtilisateurDTO getUtilisateurByEmail(String email) throws NotFoundUtilisateur {
+    public ResponseUtilisateurDTO getUtilisateurByEmail(String email) {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email);
         if(utilisateur == null) throw new NotFoundUtilisateur("user not found with email: " + email);
         return utilisatuerMapper.toResponse(utilisateur);
+    }
+
+    public Utilisateur loadUtilisateur(Long id) {
+        return utilisateurRepository.findById(id)
+                .orElseThrow(() -> new NotFoundUtilisateur("user not found with id :" + id));
     }
 
 }

@@ -2,23 +2,20 @@ package ma.ensa.test_stage_projet.services;
 
 import ma.ensa.test_stage_projet.Dtos.CreateUtilisateurDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseUtilisateurDTO;
-import ma.ensa.test_stage_projet.exceptions.NotFoundOperateurException;
-import ma.ensa.test_stage_projet.exceptions.NotFoundProfileException;
-import ma.ensa.test_stage_projet.exceptions.NotFoundUtilisateur;
-import ma.ensa.test_stage_projet.exceptions.NotUtilisatuerException;
+import ma.ensa.test_stage_projet.exceptions.*;
 
 import java.util.List;
 
 public interface UtilisateurService {
-    ResponseUtilisateurDTO addUtilisateur(CreateUtilisateurDTO createUtilisateurDTO) throws NotFoundOperateurException, NotFoundProfileException;
+    ResponseUtilisateurDTO addUtilisateur(CreateUtilisateurDTO createUtilisateurDTO);
 
     ResponseUtilisateurDTO updateUtilisateur(Long id, CreateUtilisateurDTO createUtilisateurDTO);
 
-    void deleteUtilisateur(Long id) throws NotFoundUtilisateur, NotUtilisatuerException;
+    void deleteUtilisateur(Long id) ;
 
-    ResponseUtilisateurDTO getUtilisateur(Long id) throws NotFoundUtilisateur;
+    ResponseUtilisateurDTO getUtilisateur(Long id) ;
 
     List<ResponseUtilisateurDTO> getUtilisateurs(int page , int size);
 
-    ResponseUtilisateurDTO getUtilisateurByEmail(String email) throws NotFoundUtilisateur;
+    ResponseUtilisateurDTO getUtilisateurByEmail(String email) ;
 }

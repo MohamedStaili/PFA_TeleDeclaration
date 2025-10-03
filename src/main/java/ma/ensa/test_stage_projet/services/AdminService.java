@@ -12,7 +12,7 @@ import ma.ensa.test_stage_projet.exceptions.NotFoundUtilisateur;
 import java.util.List;
 
 public interface AdminService {
-    ResponseAdminDTO addAdmin(CreateAdminDTO createAdminDTO) throws NotFoundProfileException;
+    ResponseAdminDTO addAdmin(CreateAdminDTO createAdminDTO) ;
 
     ResponseAdminDTO updateAdmin(Long id, CreateAdminDTO createAdminDTO);
 

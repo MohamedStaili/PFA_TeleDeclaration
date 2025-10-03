@@ -2,6 +2,7 @@ package ma.ensa.test_stage_projet.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import ma.ensa.test_stage_projet.Dtos.ResponseUtilisateurDTO;
 import ma.ensa.test_stage_projet.entities.Utilisateur;
 import ma.ensa.test_stage_projet.exceptions.NotFoundUtilisateur;
 import ma.ensa.test_stage_projet.exceptions.TokenExperedException;
@@ -16,9 +17,9 @@ import java.util.Date;
 public class AccountServiceImpl implements AccountService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoderConfig passwordEncoderConfig ;
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional
     @Override
-    public void activateUtilisateur(String token, String Password) throws NotFoundUtilisateur, TokenExperedException {
+    public void activateUtilisateur(String token, String Password) {
         Utilisateur utilisateur = utilisateurRepository.findByTokenActivation(token);
         if (utilisateur == null) throw new NotFoundUtilisateur("not found utilisateur with token: " + token);
         if(utilisateur.getExpirationDateActivationToken()!=null
@@ -31,4 +32,5 @@ public class AccountServiceImpl implements AccountService {
         utilisateur.setActive(true);
         utilisateurRepository.save(utilisateur);
     }
+
 }

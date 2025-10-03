@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface OperateurRepository extends JpaRepository<Operateur, Long> {
     Optional<Operateur> findTopByOrderByCodeCptableDesc();
     Operateur findByCodeCptable(Long codeCptable);
+
+    Operateur findByCode(String code);
 }

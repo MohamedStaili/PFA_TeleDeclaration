@@ -1,21 +1,30 @@
 package ma.ensa.test_stage_projet.sec;
 
+import lombok.Getter;
 import ma.ensa.test_stage_projet.entities.Utilisateur;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class UserDetailsInfo implements UserDetails {
     private String email ;
     private String password ;
+    private boolean enabled ;
+    @Getter
+    private Long operateur ;
     private GrantedAuthority authorities;
     public UserDetailsInfo(Utilisateur appUser) {
         this.email = appUser.getEmail();
         this.password = appUser.getPassword();
-        this.authorities = new SimpleGrantedAuthority(appUser.getProfile().getNom());
+        this.authorities = new SimpleGrantedAuthority("ROLE_" + appUser.getProfile().getNom());
+        this.enabled = appUser.isActive() ;
+        if(appUser.getOperateur()!=null){
+            this.operateur = appUser.getOperateur().getId_operateur();
+        }
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,6 +57,7 @@ public class UserDetailsInfo implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
+
 }

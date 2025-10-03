@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface CategorieService {
     ResponseCategorieDTO create(CreateCategorieDTO createCategorieDTO);
-    ResponseCategorieDTO update(Long id , CreateCategorieDTO createCategorieDTO) throws NotFoundCategorieException;
-    void delete(Long id) throws NotFoundCategorieException;
-    ResponseCategorieDTO findById(Long id) throws NotFoundCategorieException;
-    ResponseCategorieDTO findByDesignation(String designation) throws NotFoundCategorieException;
+    ResponseCategorieDTO update(Long id , CreateCategorieDTO createCategorieDTO) ;
+    void delete(Long id) ;
+    ResponseCategorieDTO findById(Long id) ;
+    ResponseCategorieDTO findByDesignation(String designation) ;
     List<ResponseCategorieDTO> findAll();
 }

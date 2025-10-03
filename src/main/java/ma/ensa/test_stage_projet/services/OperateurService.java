@@ -10,10 +10,10 @@ import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
 import java.util.List;
 
 public interface OperateurService {
-    ResponseOperateurDTO addOperateur(CreateOperatuerDTO createOperatuerDTO) throws NotFoundVilleException, NotFoundProfileException;
-    ResponseOperateurDTO updateOperateur(Long id ,CreateOperatuerDTO createOperatuerDTO) throws NotFoundOperateurException, NotFoundVilleException, NotFoundProfileException;
-    void deleteOperateur(Long id) throws NotFoundOperateurException;
-    ResponseOperateurDTO getOperateur(Long id) throws NotFoundOperateurException;
-    ResponseOperateurDTO getOperateurByCode(Long code) throws NotFoundOperateurException;
+    ResponseOperateurDTO addOperateur(CreateOperatuerDTO createOperatuerDTO) ;
+    ResponseOperateurDTO updateOperateur(Long id ,CreateOperatuerDTO createOperatuerDTO) ;
+    void deleteOperateur(Long id) ;
+    ResponseOperateurDTO getOperateur(Long id) ;
+    ResponseOperateurDTO getOperateurByCode(Long code) ;
     List<ResponseOperateurDTO> getOperateurs();
 }

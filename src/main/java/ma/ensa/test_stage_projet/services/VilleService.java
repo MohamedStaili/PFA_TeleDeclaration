@@ -12,13 +12,13 @@ public interface VilleService {
 
      Map<String,Object> getVilles(int page, int size);
 
-    ResponseVilleDTO updateVille(CreateVilleDTO villeDTO, Long id) throws NotFoundVilleException, NotFoundSEException;
+    ResponseVilleDTO updateVille(CreateVilleDTO villeDTO, Long id) ;
 
-    ResponseVilleDTO getVilleDTO(Long id) throws NotFoundVilleException;
+    ResponseVilleDTO getVilleDTO(Long id) ;
 
-    ResponseVilleDTO getVilleByName(String nom) throws NotFoundVilleException;
+    ResponseVilleDTO getVilleByName(String nom) ;
 
-    void deleteVille(Long id) throws NotFoundVilleException;
+    void deleteVille(Long id) ;
 
-    ResponseVilleDTO getVilleByCode(String code) throws NotFoundVilleException;
+    ResponseVilleDTO getVilleByCode(String code) ;
 }

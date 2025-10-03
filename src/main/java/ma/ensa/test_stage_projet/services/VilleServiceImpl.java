@@ -5,6 +5,8 @@ import ma.ensa.test_stage_projet.Dtos.CreateVilleDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseVilleDTO;
 import ma.ensa.test_stage_projet.entities.ServiceExterieur;
 import ma.ensa.test_stage_projet.entities.Ville;
+import ma.ensa.test_stage_projet.exceptions.DuplicateCodeException;
+import ma.ensa.test_stage_projet.exceptions.DuplicateDesignationException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundSEException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
 import ma.ensa.test_stage_projet.mappers.ServiceExterieurMapper;
@@ -13,6 +15,7 @@ import ma.ensa.test_stage_projet.repositories.ServiceExterieurRepository;
 import ma.ensa.test_stage_projet.repositories.VilleRepositiry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +29,15 @@ public class VilleServiceImpl implements VilleService {
     private final VilleRepositiry villeRepositiry;
     private final ServiceExterieurRepository serviceExterieurRepository;
     private final VilleMapper villeMapper;
-    private final ServiceExterieurMapper serviceExterieurMapper;
-    @Transactional(rollbackFor = NotFoundSEException.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
     public ResponseVilleDTO saveVille(CreateVilleDTO villeDTO){
         Ville ville = villeMapper.fromCreate(villeDTO);
+        if(villeRepositiry.findByDesignation(villeDTO.designation()) !=null)
+            throw new DuplicateDesignationException("this designation is already in use");
+        if(villeRepositiry.findByCode(villeDTO.code()) !=null) throw new DuplicateCodeException("this code is already in use");
+
         Ville savedVille = villeRepositiry.save(ville);
          return villeMapper.toResponse(savedVille);
     }
@@ -47,30 +54,39 @@ public class VilleServiceImpl implements VilleService {
         response.put("totalElements",villePage.getTotalElements());
         return response;
     }
-    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public ResponseVilleDTO updateVille(CreateVilleDTO villeDTO, Long id) throws NotFoundVilleException, NotFoundSEException {
-        villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
+    public ResponseVilleDTO updateVille(CreateVilleDTO villeDTO, Long id) {
+        Ville villeValidate = villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
+        Ville villeValidate2 = villeRepositiry.findByDesignation(villeDTO.designation());
+        Ville villeValidate3 = villeRepositiry.findByCode(villeDTO.code());
+        if(villeValidate != villeValidate2)
+            throw new DuplicateDesignationException("this designation is already in use");
+
+        if(villeValidate != villeValidate3)
+            throw new DuplicateCodeException("this code is already in use");
+
         Ville ville = villeMapper.fromCreate(villeDTO);
         ville.setId_ville(id);
         Ville savedVille =villeRepositiry.save(ville);
         return villeMapper.toResponse(savedVille);
     }
     @Override
-    public ResponseVilleDTO getVilleDTO(Long id) throws NotFoundVilleException {
+    public ResponseVilleDTO getVilleDTO(Long id)  {
         Ville ville = villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
-        ResponseVilleDTO villeDTO = villeMapper.toResponse(ville);
-        return villeDTO;
+        return villeMapper.toResponse(ville);
+
     }
     @Override
-    public ResponseVilleDTO getVilleByName(String nom) throws NotFoundVilleException {
+    public ResponseVilleDTO getVilleByName(String nom) {
         Ville ville = villeRepositiry.findByDesignation(nom);
         if(ville == null) throw new NotFoundVilleException("Ville not found");
-        ResponseVilleDTO villeDTO = villeMapper.toResponse(ville);
-        return villeDTO;
-    }
+        return villeMapper.toResponse(ville);
 
-    @Transactional(rollbackFor = Exception.class)
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
     public void deleteVille(Long id) throws NotFoundVilleException {
         Ville ville = villeRepositiry.findById(id).orElseThrow(()->new NotFoundVilleException("Ville not found"));
@@ -83,7 +99,7 @@ public class VilleServiceImpl implements VilleService {
     }
 
     @Override
-    public ResponseVilleDTO getVilleByCode(String code) throws NotFoundVilleException {
+    public ResponseVilleDTO getVilleByCode(String code)  {
         Ville ville = villeRepositiry.findByCode(code);
         return villeMapper.toResponse(ville);
     }

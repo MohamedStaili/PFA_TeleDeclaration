@@ -4,12 +4,14 @@ import ma.ensa.test_stage_projet.Dtos.CreateOperatuerDTO;
 import ma.ensa.test_stage_projet.Dtos.ResponseOperateurDTO;
 import ma.ensa.test_stage_projet.entities.Operateur;
 import ma.ensa.test_stage_projet.entities.Profile;
+import ma.ensa.test_stage_projet.exceptions.DuplicateCodeException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundOperateurException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundProfileException;
 import ma.ensa.test_stage_projet.exceptions.NotFoundVilleException;
 import ma.ensa.test_stage_projet.mappers.OperateurMapper;
 import ma.ensa.test_stage_projet.repositories.OperateurRepository;
 import ma.ensa.test_stage_projet.repositories.ProfileRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,21 +35,26 @@ public class OperateurServiceImpl implements OperateurService {
         }
         return next;
     }
-    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public ResponseOperateurDTO addOperateur(CreateOperatuerDTO createOperatuerDTO) throws NotFoundVilleException, NotFoundProfileException {
+    public ResponseOperateurDTO addOperateur(CreateOperatuerDTO createOperatuerDTO)  {
         Profile profile =profileRepository.findById(createOperatuerDTO.profil())
                 .orElseThrow(() -> new NotFoundProfileException("not found Profile"));
-        Operateur operateur = operateurMapper.fromCreate(createOperatuerDTO);
         String profileFirstLettre = String.valueOf(profile.getNom().trim().charAt(0));
+        String code = profileFirstLettre + generateNextCode() ;
+        Operateur opCode = operateurRepository.findByCode(code) ;
+        if(opCode != null) throw new DuplicateCodeException("code already in use");
+        Operateur operateur = operateurMapper.fromCreate(createOperatuerDTO);
         operateur.setCodeCptable(generateNextCode());
-        operateur.setCode(profileFirstLettre + generateNextCode());
+        operateur.setCode(code);
         Operateur savedOperateur = operateurRepository.save(operateur);
         return operateurMapper.toResponse(savedOperateur);
     }
-    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public ResponseOperateurDTO updateOperateur(Long id, CreateOperatuerDTO createOperatuerDTO) throws NotFoundOperateurException, NotFoundVilleException, NotFoundProfileException {
+    public ResponseOperateurDTO updateOperateur(Long id, CreateOperatuerDTO createOperatuerDTO) {
         Operateur operateur = operateurRepository.findById(id)
                 .orElseThrow(() -> new NotFoundOperateurException("not found Operateur"));
         Operateur updatOperateur = operateurMapper.fromCreate(createOperatuerDTO) ;
@@ -55,28 +62,29 @@ public class OperateurServiceImpl implements OperateurService {
         Operateur savedOperateur = operateurRepository.save(updatOperateur);
         return operateurMapper.toResponse(savedOperateur);
     }
-    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public void deleteOperateur(Long id) throws NotFoundOperateurException {
+    public void deleteOperateur(Long id) {
         Operateur operateur = operateurRepository.findById(id)
                 .orElseThrow(() -> new NotFoundOperateurException("not found Operateur"));
         operateurRepository.delete(operateur);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public ResponseOperateurDTO getOperateur(Long id) throws NotFoundOperateurException {
+    public ResponseOperateurDTO getOperateur(Long id)  {
         Operateur operateur = operateurRepository.findById(id)
                 .orElseThrow(() -> new NotFoundOperateurException("not found Operateur"));
         return operateurMapper.toResponse(operateur);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public ResponseOperateurDTO getOperateurByCode(Long code) throws NotFoundOperateurException {
+    public ResponseOperateurDTO getOperateurByCode(Long code)  {
         Operateur operateur = operateurRepository.findByCodeCptable(code);
         if(operateur==null) throw new NotFoundOperateurException("not found Operateur");
         return operateurMapper.toResponse(operateur);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<ResponseOperateurDTO> getOperateurs() {
         List<Operateur> operateurs = operateurRepository.findAll();

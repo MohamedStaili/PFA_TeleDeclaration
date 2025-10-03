@@ -34,16 +34,10 @@ public class ServiceExterieurController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceExterieur(@PathVariable("id") Long id) {
-        try{
            Map<String,Object> map=
                     serviceExterieurService.getServiceExterieurDTO(id);
            return ResponseEntity.ok(map);
-        } catch (NotFoundSEException e) {
-            Map<String,Object> response = new HashMap<>();
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+
     }
     @GetMapping()
     public ResponseEntity<?> getServiceExterieurBy(
@@ -56,7 +50,6 @@ public class ServiceExterieurController {
             return ResponseEntity.badRequest().body("vous devez specifier un seul parametre");
         }
 
-        try {
             Map<String,Object> map = switch ((int) nbParams){
                 case 1 -> {
                     if(nomSE != null) yield  serviceExterieurService.getServiceExterieurByName(nomSE);
@@ -66,9 +59,6 @@ public class ServiceExterieurController {
             };
 
             return ResponseEntity.ok(map);
-        }catch (NotFoundSEException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
 
     }
 
@@ -80,73 +70,43 @@ public class ServiceExterieurController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteServiceExterieur(@PathVariable Long id){
-        try{
             serviceExterieurService.deleteServiceExterieur(id);
             return ResponseEntity.noContent().build();
-
-        }catch (NotFoundSEException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @PostMapping("/{idSE}/villes")
     public ResponseEntity<?> addVilleToSE(@PathVariable Long idSE ,@RequestBody Long idVille){
-        try{
             ResponseVilleDTO ville = serviceExterieurService.addVilleToSE(idSE , idVille);
             Map<String ,Object> map = new HashMap<>();
             map.put("message","Ville ajoute avec succées");
             map.put("ville",ville);
             return ResponseEntity.status(HttpStatus.CREATED).body(map);
-
-        }catch (NotFoundSEException | NotFoundVilleException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
     @DeleteMapping("/{idSE}/villes/{idVille}")
     public ResponseEntity<?> removeVilleFromSE(@PathVariable Long idSE ,@PathVariable Long idVille){
-        try{
             serviceExterieurService.deleteVilleFromSE(idSE , idVille);
             return ResponseEntity.noContent().build();
-
-        }catch (NotFoundSEException | NotFoundVilleException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @PutMapping("/{idSE}")
     public ResponseEntity<?> updateSE(@PathVariable Long idSE,@RequestBody @Valid CreateServiceExterieurDTO serviceExterieurDTO){
-        try{
             ResponseServiceExterieurDTO serviceExterieurDTO1 = serviceExterieurService.updateSE(serviceExterieurDTO,idSE);
             Map<String,Object> map = new HashMap<>();
             map.put("message","Service Exterieur update");
             map.put("serviceExterieurDTO",serviceExterieurDTO1);
             return ResponseEntity.ok(map);
-
-        }catch (NotFoundSEException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @PostMapping("/{idSE}/addresse")
     public ResponseEntity<?> addAddresse(@PathVariable Long idSE , @RequestBody Long idVille){
-        try {
             Map<String,Object> map = serviceExterieurService.addAdresse(idSE , idVille);
             return ResponseEntity.status(HttpStatus.CREATED).body(map);
-
-        }catch (NotFoundSEException | NotFoundVilleException | AddresseAlreadyADD e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @PutMapping("/{idSE}/addresse")
     public ResponseEntity<?> updateAddresse(@PathVariable Long idSE ,@RequestBody Long idNewVille){
-        try {
             Map<String, Object> map = serviceExterieurService.updateAddresse(idSE , idNewVille);
             return ResponseEntity.ok(map);
-
-        }catch (NotFoundSEException | NotFoundVilleException | VilleNotInSEException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
 //    @DeleteMapping("/{idSE}/villes/{idVille}")

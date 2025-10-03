@@ -32,27 +32,18 @@ public class RegimeController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> addRegime(@RequestBody @Valid CreateRegimeDTO createRegimeDTO,@PathVariable Long id)  {
-        try{
             ResponseRegimeDTO responseRegimeDTO = regimeService.updateRegimeImportation(createRegimeDTO , id);
             Map<String,Object> response = new HashMap<>();
             response.put("message","Regime updated");
             response.put("response", responseRegimeDTO);
             return ResponseEntity.ok(response);
-        }catch (NotFoundRegimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
 
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteRegime(@PathVariable Long id)  {
-        try{
             regimeService.deleteRegimeImportation(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Regime deleted");
-
-        }catch (NotFoundRegimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
     @GetMapping("/all")
     public ResponseEntity<?> getAllRegimes() {
@@ -64,15 +55,9 @@ public class RegimeController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getRegime(@PathVariable Long id)  {
         Map<String,Object> response = new HashMap<>();
-        try{
             ResponseRegimeDTO responseRegimeDTO = regimeService.findById(id);
             response.put("regime",responseRegimeDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (NotFoundRegimeException e) {
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
     @GetMapping()
     public ResponseEntity<?> getRegimeBy(@RequestParam(required = false) String designation ,
@@ -80,7 +65,6 @@ public class RegimeController {
         Map<String,Object> response = new HashMap<>();
         long nbParams = Stream.of(designation,code).filter(Objects::nonNull).count();
         if(nbParams!=1) return ResponseEntity.badRequest().body("nombre des parametres n'est pas autorisé");
-        try{
             ResponseRegimeDTO regimeDTO = switch ((int) nbParams){
                 case 1 -> {
                     if(designation != null) yield regimeService.findByDesignation(designation);
@@ -90,11 +74,5 @@ public class RegimeController {
             };
             response.put("regime_importation",regimeDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch(NotFoundRegimeException e){
-            response.put("message","error");
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-
-        }
     }
 }

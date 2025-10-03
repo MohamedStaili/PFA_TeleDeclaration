@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PortDechargementRepository extends JpaRepository<PortDechargemnt, Long> {
     PortDechargemnt findByDesignation(String designation);
+    PortDechargemnt findByCode(String code);
 }

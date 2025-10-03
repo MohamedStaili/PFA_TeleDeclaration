@@ -9,10 +9,10 @@ import ma.ensa.test_stage_projet.exceptions.NotFoundRegimeException;
 import java.util.List;
 
 public interface ArticleService {
-    ResponseArticleDTO addArticle(CreateArticleDTO createArticleDTO) throws NotFoundRegimeException, NotFoundCategorieException;
-    ResponseArticleDTO updateArticle(Long id,CreateArticleDTO createArticleDTO) throws NotFoundArticleException, NotFoundRegimeException, NotFoundCategorieException;
+    ResponseArticleDTO addArticle(CreateArticleDTO createArticleDTO) ;
+    ResponseArticleDTO updateArticle(Long id,CreateArticleDTO createArticleDTO) ;
     void deleteArticle(Long id) throws NotFoundArticleException;
-    ResponseArticleDTO getArticle(Long id) throws NotFoundArticleException;
-    ResponseArticleDTO getArticleByDesignation(String designation) throws NotFoundArticleException;
+    ResponseArticleDTO getArticle(Long id) ;
+    ResponseArticleDTO getArticleByDesignation(String designation) ;
     List<ResponseArticleDTO> getArticles();
 }

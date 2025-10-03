@@ -31,40 +31,25 @@ public class ProfileController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProfile(@PathVariable Long id, CreateProfileDTO createProfileDTO) {
         Map<String,Object> response = new HashMap<>();
-        try{
             ResponseProfileDTO profileDTO = profileService.updateProfile(id,createProfileDTO);
             response.put("message","profile updated");
             response.put("profile",profileDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (NotFoundProfileException e) {
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProfile(@PathVariable Long id) {
         Map<String,Object> response = new HashMap<>();
-        try {
             profileService.deleteProfile(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (NotFoundProfileException e) {
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProfile(@PathVariable Long id) {
         Map<String,Object> response = new HashMap<>();
-        try {
             ResponseProfileDTO profileDTO = profileService.getProfile(id);
             response.put("profile",profileDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (NotFoundProfileException e) {
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
 
     @GetMapping("/all")
@@ -78,13 +63,8 @@ public class ProfileController {
     @GetMapping
     public ResponseEntity<?> getProfileByNom(@RequestParam String nom) {
         Map<String,Object> response = new HashMap<>();
-        try {
             ResponseProfileDTO profileDTO = profileService.getProfileByNom(nom);
             response.put("profile",profileDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (NotFoundProfileException e) {
-            response.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
 }

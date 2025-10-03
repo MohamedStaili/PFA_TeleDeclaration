@@ -27,41 +27,27 @@ public class AdminController
     @PostMapping
     public ResponseEntity<?> createAdmin(@RequestBody @Valid CreateAdminDTO createAdminDTO) {
         Map<String,Object> map = new HashMap<>();
-        try{
             ResponseAdminDTO responseUtilisateurDTO = adminService.addAdmin(createAdminDTO);
             map.put("message", "new admin created");
             map.put("admin", responseUtilisateurDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(map);
-        }catch (NotFoundProfileException e){
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAdmin(@PathVariable Long id) {
         Map<String,Object> map = new HashMap<>();
-        try{
             adminService.deleteAdmin(id);
             //map.put("message", "utilisateur deleted");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (NotFoundUtilisateur | NotAdminException e) {
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAdminById(@PathVariable Long id) {
         Map<String,Object> map = new HashMap<>();
-        try{
             ResponseAdminDTO responseUtilisateurDTO = adminService.getAdmin(id);
             map.put("admin", responseUtilisateurDTO);
             return ResponseEntity.status(HttpStatus.OK).body(map);
-        } catch (NotFoundUtilisateur e) {
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
     }
 
     @GetMapping("/all")
@@ -75,13 +61,8 @@ public class AdminController
     @GetMapping
     public ResponseEntity<?> getAdminByEmail(@RequestParam String email) {
         Map<String,Object> map = new HashMap<>();
-        try{
             ResponseAdminDTO responseUtilisateurDTO = adminService.getAdminByEmail(email);
             map.put("admin", responseUtilisateurDTO);
             return ResponseEntity.status(HttpStatus.OK).body(map);
-        } catch (NotFoundUtilisateur e) {
-            map.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-        }
     }
 }
